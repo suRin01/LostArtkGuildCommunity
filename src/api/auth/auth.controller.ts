@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Request, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
-import { UserService } from "src/api/user/user.service";
-import { User } from "../user/user.entity"; 
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "./auth.guard";
 import { LocalAuthGuard } from "./local-auth.guard";
+import { user } from "@prisma/client";
 
 @Controller("/auth")
 export class AuthController {
@@ -11,7 +10,7 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
 	@Post("/login")
-	async getUserAll(@Body() signInDto: Record<string, any>): Promise<User[]> {
+	async getUserAll(@Body() signInDto: Record<string, any>): Promise<user[]> {
 		return await this.authService.signIn(signInDto.username, signInDto.password);
 	}
 
