@@ -7,35 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model role {
-  role_idx       Int             @id @default(autoincrement())
-  name           String          @db.VarChar(100)
-  upper_role_idx Int
-  role_relation  role_relation[]
-}
-
-model role_relation {
-  role_relation_idx Int  @id @default(autoincrement())
-  user_idx          Int
-  role_idx          Int
-  role              role @relation(fields: [role_idx], references: [role_idx], onUpdate: Restrict, map: "FK_role_TO_role_relation_1")
-  user              user @relation(fields: [user_idx], references: [user_idx], onUpdate: Restrict, map: "FK_user_TO_role_relation_1")
-
-  @@index([role_idx], map: "FK_role_TO_role_relation_1")
-  @@index([user_idx], map: "FK_user_TO_role_relation_1")
-}
-
-model user {
-  user_idx      Int             @id @default(autoincrement())
-  user_name     String          @db.VarChar(50)
-  name          String          @db.VarChar(100)
-  password      String          @db.VarChar(100)
-  sex_dstn_code String          @db.VarChar(1)
-  mobile_phone  String          @db.VarChar(50)
-  character     character[]
-  role_relation role_relation[]
-}
-
 model character {
   character_idx     Int                 @id @default(autoincrement())
   user_idx          Int
@@ -206,10 +177,43 @@ model raid_target {
   @@index([raid_idx], map: "FK_raid_TO_raid_target_1")
 }
 
+model role {
+  role_idx       Int             @id @default(autoincrement())
+  name           String          @db.VarChar(100)
+  upper_role_idx Int?
+  role           role?           @relation("roleTorole", fields: [upper_role_idx], references: [role_idx], onDelete: Restrict, onUpdate: Restrict, map: "FK_role_TO_role_1")
+  other_role     role[]          @relation("roleTorole")
+  role_relation  role_relation[]
+
+  @@index([upper_role_idx], map: "FK_role_TO_role_1")
+}
+
+model role_relation {
+  role_relation_idx Int  @id @default(autoincrement())
+  user_idx          Int
+  role_idx          Int
+  role              role @relation(fields: [role_idx], references: [role_idx], onUpdate: Restrict, map: "FK_role_TO_role_relation_1")
+  user              user @relation(fields: [user_idx], references: [user_idx], onUpdate: Restrict, map: "FK_user_TO_role_relation_1")
+
+  @@index([role_idx], map: "FK_role_TO_role_relation_1")
+  @@index([user_idx], map: "FK_user_TO_role_relation_1")
+}
+
 model temp {
   raid_target_idx Int       @id @default(autoincrement())
   input_id        String?   @db.VarChar(50)
   input_dt        DateTime? @default(now()) @db.Date
   update_id       String?   @db.VarChar(50)
   update_dt       DateTime? @db.Date
+}
+
+model user {
+  user_idx      Int             @id @default(autoincrement())
+  user_name     String          @db.VarChar(50)
+  name          String          @db.VarChar(100)
+  password      String          @db.VarChar(100)
+  sex_dstn_code String          @db.VarChar(1)
+  mobile_phone  String          @db.VarChar(50)
+  character     character[]
+  role_relation role_relation[]
 }

@@ -277,3 +277,9 @@ REFERENCES `raid` (
 	`raid_idx`
 );
 
+ALTER TABLE `role` ADD CONSTRAINT `FK_role_TO_role_1` FOREIGN KEY (
+	`upper_role_idx`
+)
+REFERENCES `role` (
+	`role_idx`
+);

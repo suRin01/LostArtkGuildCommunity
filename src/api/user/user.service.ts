@@ -1,18 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { user as userModel} from "@prisma/client";
-import { PrismaService } from "../datasource/prisma.service";
+import { PrismaService } from "../../datasource/prisma.service";
 
 @Injectable()
 export class UserService {
 	constructor(
 		private readonly prismaService: PrismaService
 	){}
-	getHello(): string {
-		return "Hello World! this is user api";
-	}
 	
-	async findAll(username: string = ''): Promise<userModel[]> {
+	async findAll(skip:number = 0, take:number = 10, username: string): Promise<userModel[]> {
 		const users = this.prismaService.user.findMany({
+			skip,
+			take,
 			where:{
 				user_name: {
 					contains: username

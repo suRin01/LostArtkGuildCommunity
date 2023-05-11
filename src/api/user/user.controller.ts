@@ -1,31 +1,22 @@
-import { Controller, Get, Param, Request, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Query, Request, UseGuards } from "@nestjs/common";
 import { UserService } from "src/api/user/user.service";
-import { AuthGuard } from "../auth/auth.guard";
+import { AccessJwtAuthGuard } from "../auth/auth.guard";
 import { user } from "@prisma/client";
+import { hasRole } from "src/decorator/role.decorator";
 
 @Controller("/user")
 export class UserContoller {
 	constructor(private readonly userService: UserService) {}
 
-	@Get("/hello")
-	getHello(): string {
-		return this.userService.getHello();
+	@Get("")
+	@hasRole('admin', 'user')
+	async getUserAll(@Query() query): Promise<user[]> {
+		return await this.userService.findAll(+query.offset ?? 0, +query.count ?? 10, query.username);
 	}
 
-	@Get("/")
-	async getUserAll(@Param() params): Promise<user[]> {
-		const serchQuery = {
-			
-		};
-
-		return await this.userService.findAll();
-	}
-
-
-	@UseGuards(AuthGuard)
-	@Get(":username")
-	async getUserOne(@Request() req, @Param() params): Promise<user> {
-		console.log(req.user);
-		return await this.userService.findOneByUsername(params.username);
+	@UseGuards(AccessJwtAuthGuard)
+	@Get("/me")
+	async getUserOne(@Request() req): Promise<user> {
+		return await this.userService.findOneByUsername(req.user.username);
 	}
 }

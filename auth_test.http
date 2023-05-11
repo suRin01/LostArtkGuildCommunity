@@ -1,0 +1,67 @@
+### login test
+POST /auth/login HTTP/1.1
+Host: localhost:3000
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 38
+
+username=user1&password=password_unenc
+
+### created jwtToken from login test
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTY4Mzc5MzEyMSwiZXhwIjoxNjgzNzk2NzIxfQ.BUiAPkLQ3DSPbd9-lFa0249FhWG1DFdzkzK4hQQxY3M
+
+@refreshJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTY4Mzc5MzM3OSwiZXhwIjoxNjgzODc5Nzc5fQ.IpcGbFSl8AoBpasqCbggWyzFG-vUMRSVZIK0uo1Df58
+### jwt token test
+curl http://localhost:3000/user/me  \
+-H "Authorization: Bearer {{jwtToken}}"
+
+### refresh jwt token test
+GET /auth/refresh HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer {{jwtToken}}
+
+### refresh jwt token test
+GET /auth/refresh HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer {{refreshJwtToken}}
+
+### user search
+GET /user?username=user&count=10&offset=100 HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer {{jwtToken}}
+cookie: NNB=BUXPCOEZZ7CGG; MY_NUDGE=1;
+
+
+### common code table lookup
+GET /code/group?code_group_idx=1&offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+
+### common code table lookup
+GET /code/group HTTP/1.1
+Host: localhost:3000
+
+### common code detail table lookup
+GET /code/detail?code_group_idx=1&offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+
+
+### common bbs articles looup
+GET /bbs/1?offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+
+### common bbs articles looup
+GET /bbs/1?offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+
+### common bbs articles looup
+GET /bbs/1?offset=0&count=10&article_code=01-01 HTTP/1.1
+Host: localhost:3000
+
+
+### common bbs single article looup
+GET /bbs/1/1?offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+
+### common bbs single article looup
+GET /bbs/me?offset=0&count=10 HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer {{jwtToken}}

@@ -1,42 +1,50 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../user/user.service'; 
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { user } from "@prisma/client";
+import { jwtToken } from 'src/model/models';
 
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService, 
-    private jwtService: JwtService
-) {}
+    constructor(
+        private userService: UserService,
+        private jwtService: JwtService
+    ) { }
 
-  async signIn(username: string, pass: string): Promise<any> {
-    const user = await this.userService.findOneByUsername(username);
-    if (user?.password !== pass) {
-        throw new UnauthorizedException();
-      }
-      const payload = { username: user.user_name, sub: user.name };
-      return {
-        access_token: await this.jwtService.signAsync(payload),
-      };
-  }
+    async signIn(username: string, pass: string): Promise<jwtToken> {
+        const user = await this.userService.findOneByUsername(username);
+        if (user?.password !== pass) {
+            throw new UnauthorizedException();
+        }
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.userService.findOneByUsername(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+        const payload = {
+            idx: user.user_idx,
+            username: user.user_name,
+            sub: user.name
+        };
+        const access_token = await this.jwtService.signAsync(payload);
+        const refresh_token = await this.jwtService.signAsync({...payload, type:"rtoken"}, {
+            expiresIn: "1d"
+        })
+
+        return {
+            payload,
+            access_token,
+            refresh_token
+        };
     }
-    return null;
-  }
 
-  async login(user: user) {
-    const payload = { username: user.user_name, sub: user.name };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+    async refreshAccessToken(username: string): Promise<string>{
+        const user = await this.userService.findOneByUsername(username);
+        const payload = {
+            idx: user.user_idx,
+            username: user.user_name,
+            sub: user.name
+        };
+        const access_token = await this.jwtService.signAsync(payload);
 
+        return access_token;
+    }
 
 }

@@ -4,14 +4,14 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
-import { LocalStrategy } from "./local.trategy";
+import { RoleModule } from "../role/role.module";
 @Module({
-    imports:[UserModule, ConfigModule.forRoot(), JwtModule.register({
+    imports:[RoleModule, UserModule, ConfigModule.forRoot(), JwtModule.register({
         secret: process.env.JWT_TOKEN,
         signOptions: { expiresIn: '3600s' },
       }),],
 	controllers: [AuthController],
-	providers: [AuthService, LocalStrategy],
+	providers: [AuthService],
     exports: []
 })
 export class AuthModule {}
