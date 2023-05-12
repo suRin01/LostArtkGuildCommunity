@@ -7,9 +7,9 @@ Content-Length: 38
 username=user1&password=password_unenc
 
 ### created jwtToken from login test
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTY4Mzc5MzEyMSwiZXhwIjoxNjgzNzk2NzIxfQ.BUiAPkLQ3DSPbd9-lFa0249FhWG1DFdzkzK4hQQxY3M
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTY4Mzc5MzgyNywiZXhwIjoxNjgzNzk3NDI3fQ.2CBHmyOTy1yW_S_rjvs09k19Sp_7fKjHNLbgnJkJHVs
 
-@refreshJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTY4Mzc5MzM3OSwiZXhwIjoxNjgzODc5Nzc5fQ.IpcGbFSl8AoBpasqCbggWyzFG-vUMRSVZIK0uo1Df58
+@refreshJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjEsInVzZXJuYW1lIjoidXNlcjEiLCJzdWIiOiJ1c2VybmFtZSIsInR5cGUiOiJydG9rZW4iLCJpYXQiOjE2ODM3OTM0NjksImV4cCI6MTY4Mzg3OTg2OX0.FKK9-uzzSpUANX_hCh0M-fLGMBilirklJ1goviP4Y4s
 ### jwt token test
 curl http://localhost:3000/user/me  \
 -H "Authorization: Bearer {{jwtToken}}"
@@ -23,6 +23,12 @@ Authorization: Bearer {{jwtToken}}
 GET /auth/refresh HTTP/1.1
 Host: localhost:3000
 Authorization: Bearer {{refreshJwtToken}}
+
+
+### logout
+POST /auth/logout HTTP/1.1
+Host: localhost:3000
+
 
 ### user search
 GET /user?username=user&count=10&offset=100 HTTP/1.1

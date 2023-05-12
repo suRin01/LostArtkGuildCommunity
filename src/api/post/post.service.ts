@@ -63,7 +63,52 @@ export class PostService {
 		return posts;
     }
 
+    async getListBbsArticles(skip:number = 0, take:number = 10, searchParams: searchParams[]): Promise<common_bbs_article[]> {
+		let query = {
+            skip,
+            take,
+            where: {
+                bbs_idx: {
+                    equals: undefined
+                },
+                article_idx: {
+                    equals: undefined
+                },
+                title:{
+                    contains: undefined
+                },
+                article_code:{
+                    equals: undefined
+                },
+                input_id:{
+                    equals: undefined
+                },
+            },
+            include:{
+                _count:{
+                    select: {common_bbs_reply: true}
+                }
+            }
+        }
 
+        searchParams.map((searchParam)=>{
+            const acceptableParam = Object.keys(query.where).findIndex((node)=>{
+                if(node === searchParam.searchType) 
+                    return node;
+            })
+
+            if(acceptableParam === -1){
+                return;
+            }
+            if(searchParam.searchValue !== undefined && searchParam.searchValue !== null){
+                query.where[searchParam.searchType][Object.keys(query.where[searchParam.searchType])[0]] = searchParam.searchValue;
+            }
+            return;
+        })
+        
+        const posts = this.prismaService.common_bbs_article.findMany(query);
+		return posts;
+    }
 
 	
 }

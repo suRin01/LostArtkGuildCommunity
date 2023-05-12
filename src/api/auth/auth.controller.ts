@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Request, HttpCode, HttpStatus, UseGuards, Response } from "@nestjs/common";
+import { Controller, Get, Post, Body, Request, HttpCode, HttpStatus, UseGuards, Response, Redirect } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AccessJwtAuthGuard } from "./auth.guard";
 import { jwtToken } from "src/model/models";
@@ -54,5 +54,20 @@ export class AuthController {
 
 
 		res.status(HttpStatus.OK).send();
+	}
+
+	/**
+	 * remove tokens
+	 * @param res 
+	 * @returns 
+	 */
+
+	@Post("/logout")
+	@Redirect("/")
+	logout(@Response() res): void{
+		res.cookie('access_token', '', {
+			maxAge: 0
+		})
+		return;
 	}
 }

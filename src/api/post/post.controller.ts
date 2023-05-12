@@ -30,7 +30,7 @@ export class PostController {
 
         const offset:number = typeof query.offset === typeof undefined ? 0 : +query.offset
         const count:number = typeof query.count === typeof undefined ? 10 : +query.count
-		return await this.postService.getAllBbsArticles(
+		return await this.postService.getListBbsArticles(
             offset, 
             count, 
             [
